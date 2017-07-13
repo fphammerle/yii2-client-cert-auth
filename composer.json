@@ -1,0 +1,21 @@
+{
+    "name": "fphammerle/yii2-client-cert-auth",
+    "description": "",
+    "authors" : [
+        {
+            "name": "Fabian Peter Hammerle",
+            "email": "fabian.hammerle@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.8.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "fphammerle\\yii2\\": ""
+        }
+    }
+}
