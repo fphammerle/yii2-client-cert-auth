@@ -9,24 +9,22 @@ class Subject extends \yii\db\ActiveRecord
         return 'identity_cert_subject';
     }
 
-    public function __construct($dn = null)
+    public function __construct($identity_id = null, $dn = null)
     {
+        $this->identity_id = $identity_id;
         $this->distinguished_name = $dn;
     }
 
     public function rules()
     {
         return [
+            [['distinguished_name', 'identity_id'], 'required'],
             [['distinguished_name'], 'required'],
             [['distinguished_name'], 'string'],
             [['distinguished_name'], 'unique'],
+            [['identity_id'], self::getIdentityIdSchema()->type],
             ];
     }
-
-    // public function getIdentityId()
-    // {
-    //     return $this->identity_id;
-    // }
 
     public static function getIdentityClass()
     {
