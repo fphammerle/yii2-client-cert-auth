@@ -23,7 +23,9 @@ class SubjectTest extends TestCase
     protected function setUp()
     {
         $this->mockApplication();
+        ob_start();
         (new migrations\CreateSubjectTable)->up();
+        ob_end_clean();
 
         $this->alice = new models\User('alice');
         $this->bob = new models\User('bob');

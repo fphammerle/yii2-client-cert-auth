@@ -21,7 +21,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             ],
         ]);
         $this->assertEquals([], $app->db->getSchema()->getTableNames());
+        ob_start();
         (new migrations\CreateUserTable)->up();
+        ob_end_clean();
         $this->assertNull($app->user->getIdentity());
         return $app;
     }
