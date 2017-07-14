@@ -10,6 +10,7 @@ class CreateSubjectTable extends \yii\db\Migration
     {
         $this->createTable(Subject::tableName(), [
             'id' => $this->primaryKey(),
+            'distinguished_name' => $this->string()->notNull()->unique(),
         ]);
     }
 
