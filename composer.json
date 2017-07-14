@@ -18,6 +18,9 @@
     "autoload": {
         "psr-4": {
             "fphammerle\\yii2\\auth\\clientcert\\": ""
-        }
+        },
+        "files": [
+            "vendor/yiisoft/yii2/Yii.php"
+        ]
     }
 }
