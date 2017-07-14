@@ -42,4 +42,15 @@ class ClientCertAuthTest extends \PHPUnit_Framework_TestCase
         $this->assertContains(['id' => 1, 'username' => 'a'], $users);
         $this->assertContains(['id' => 2, 'username' => 'b'], $users);
     }
+
+    public function testLoginLogout()
+    {
+        $app = $this->mockApplication();
+        $alice = new models\User('alice');
+        $alice->save();
+        $this->assertTrue($app->user->login($alice));
+        $this->assertSame($alice, $app->user->identity);
+        $app->user->logout();
+        $this->assertNull($app->user->identity);
+    }
 }
