@@ -57,11 +57,11 @@ class Subject extends \yii\db\ActiveRecord
         return array_pop($keys);
     }
 
-    // public function getIdentity()
-    // {
-    //     return $this->hasOne(
-    //         self::getIdentityClass(),
-    //         [Subject::getIdentityIdSchema()->name => 'identity_id']
-    //     );
-    // }
+    public function getIdentity()
+    {
+        return $this->hasOne(
+            self::getIdentityClass(),
+            [Subject::getIdentityIdSchema()->name => 'identity_id']
+        );
+    }
 }
