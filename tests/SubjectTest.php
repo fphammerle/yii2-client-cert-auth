@@ -110,4 +110,26 @@ class SubjectTest extends TestCase
         $this->setExpectedException(\TypeError::class);
         new Subject(new DummyUser);
     }
+
+    public function testFindByDN()
+    {
+        $a1 = new Subject($this->alice, 'CN=Alice,C=AT');
+        $a2 = new Subject($this->alice, 'CN=Alice,O=Office,C=AT');
+        $b = new Subject($this->bob, 'CN=Bob,C=AT');
+        $a1->save();
+        $a2->save();
+        $b->save();
+
+        $this->assertEquals(
+            $a1->id,
+            Subject::findByDistinguishedName('CN=Alice,C=AT')->id
+        );
+        $this->assertEquals(
+            $a2->id,
+            Subject::findByDistinguishedName('CN=Alice,O=Office,C=AT')->id
+        );
+        $this->assertNull(
+            Subject::findByDistinguishedName('CN=Bob,O=Office,C=AT')
+        );
+    }
 }

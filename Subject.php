@@ -82,4 +82,9 @@ class Subject extends \yii\db\ActiveRecord
         // TODO: update related record
         // $this->getRelatedRecords()['identity'] = $identity;
     }
+
+    public function findByDistinguishedName($dn)
+    {
+        return self::findOne(['distinguished_name' => $dn]);
+    }
 }
