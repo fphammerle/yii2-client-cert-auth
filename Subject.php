@@ -28,11 +28,11 @@ class Subject extends \yii\db\ActiveRecord
     //     return $this->identity_id;
     // }
 
-    // public static function getIdentityClass()
-    // {
-    //     return \Yii::$app->user->identityClass;
-    // }
-    //
+    public static function getIdentityClass()
+    {
+        return \Yii::$app->user->identityClass;
+    }
+
     // public function getIdentity()
     // {
     //     return $this->hasOne(self::getIdentityClass(), ['id' => 'identity_id']);

@@ -8,10 +8,14 @@ use \fphammerle\yii2\auth\clientcert\migrations;
 
 class SubjectTest extends TestCase
 {
+    protected function setUp()
+    {
+        $this->mockApplication();
+        (new migrations\CreateSubjectTable)->up();
+    }
+
     public function testCreateModel()
     {
-        $app = $this->mockApplication();
-        (new migrations\CreateSubjectTable)->up();
         (new Subject('CN=Alice,C=AT'))->save();
         (new Subject('CN=Alice,O=Office,C=AT'))->save();
         (new Subject('CN=Bob,C=AT'))->save();
@@ -32,8 +36,6 @@ class SubjectTest extends TestCase
 
     public function testDNUnique()
     {
-        $app = $this->mockApplication();
-        (new migrations\CreateSubjectTable)->up();
         $this->assertTrue((new Subject('CN=Alice,C=AT'))->save());
         $this->assertTrue((new Subject('CN=Bob,C=AT'))->save());
         $dup = new Subject('CN=Alice,C=AT');
