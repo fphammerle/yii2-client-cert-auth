@@ -10,6 +10,11 @@ class User extends \yii\db\ActiveRecord
         return 'user';
     }
 
+    public function __construct($username = null)
+    {
+        $this->username = $username;
+    }
+
     public static function findIdentity($id)
     {
         return static::findOne(['id' => $id]);

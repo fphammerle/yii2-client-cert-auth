@@ -2,6 +2,7 @@
 
 namespace fphammerle\yii2\auth\clientcert\tests;
 
+use \fphammerle\helpers\ArrayHelper;
 use \fphammerle\yii2\auth\clientcert\Authenticator;
 
 class ClientCertAuthTest extends \PHPUnit_Framework_TestCase
@@ -22,15 +23,23 @@ class ClientCertAuthTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
         ]);
+        $this->assertEquals([], $app->db->getSchema()->getTableNames());
         (new migrations\CreateUserTable)->up();
+        $this->assertNull($app->user->getIdentity());
         return $app;
     }
 
-    public function testDb()
+    public function testCreateUser()
     {
         $app = $this->mockApplication();
-        var_dump($app->db->createCommand('SELECT * FROM user')->queryAll());
-        $this->assertEquals('bar', Authenticator::foo());
-        $this->assertNull($app->user->getIdentity());
+        (new models\User('a'))->save();
+        (new models\User('b'))->save();
+        $users = ArrayHelper::map(
+            models\User::find()->all(),
+            function($u) { return $u->getAttributes(); }
+        );
+        $this->assertEquals(2, sizeof($users));
+        $this->assertContains(['id' => 1, 'username' => 'a'], $users);
+        $this->assertContains(['id' => 2, 'username' => 'b'], $users);
     }
 }
