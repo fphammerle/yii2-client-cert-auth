@@ -69,4 +69,23 @@ class SubjectTest extends TestCase
         $this->assertInstanceOf(models\User::className(), $s->identity);
         $this->assertEquals($this->bob->id, $s->identity->id);
     }
+
+    public function testSetIdentity()
+    {
+        $s = new Subject($this->alice, 'CN=Alice,C=AT');
+        $this->assertInstanceOf(models\User::className(), $s->identity);
+        $this->assertEquals($this->alice->id, $s->identity->id);
+
+        $s->identity = $this->bob;
+        $this->assertEquals($this->bob->id, $s->identity_id);
+        // TODO: $this->assertEquals($this->bob->id, $s->identity->id);
+
+        $s->save();
+        $s = Subject::findOne(['identity_id' => $this->bob->id]);
+        $this->assertEquals($this->bob->id, $s->identity_id);
+        $this->assertEquals($this->bob->id, $s->identity->id);
+
+        $s->identity = null;
+        $this->assertNull($s->identity_id);
+    }
 }

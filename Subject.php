@@ -11,11 +11,7 @@ class Subject extends \yii\db\ActiveRecord
 
     public function __construct(\yii\web\IdentityInterface $identity = null, $dn = null)
     {
-        if($identity !== null) {
-            $this->identity_id = $identity->getId();
-        } else {
-            $this->identity_id = null;
-        }
+        $this->identity = $identity;
         $this->distinguished_name = $dn;
     }
 
@@ -63,5 +59,18 @@ class Subject extends \yii\db\ActiveRecord
             self::getIdentityClass(),
             [Subject::getIdentityIdSchema()->name => 'identity_id']
         );
+    }
+
+    public function setIdentity(\yii\web\IdentityInterface $identity = null)
+    {
+        if($identity === null) {
+            $this->identity_id = null;
+        } else {
+            // @see \yii\web\IdentityInterface::getId()
+            $this->identity_id = $identity->getId();
+        }
+
+        // TODO: update related record
+        // $this->getRelatedRecords()['identity'] = $identity;
     }
 }
