@@ -9,9 +9,13 @@ class Subject extends \yii\db\ActiveRecord
         return 'identity_cert_subject';
     }
 
-    public function __construct($identity_id = null, $dn = null)
+    public function __construct(\yii\web\IdentityInterface $identity = null, $dn = null)
     {
-        $this->identity_id = $identity_id;
+        if($identity !== null) {
+            $this->identity_id = $identity->getId();
+        } else {
+            $this->identity_id = null;
+        }
         $this->distinguished_name = $dn;
     }
 
@@ -55,6 +59,9 @@ class Subject extends \yii\db\ActiveRecord
 
     // public function getIdentity()
     // {
-    //     return $this->hasOne(self::getIdentityClass(), ['id' => 'identity_id']);
+    //     return $this->hasOne(
+    //         self::getIdentityClass(),
+    //         [Subject::getIdentityIdSchema()->name => 'identity_id']
+    //     );
     // }
 }

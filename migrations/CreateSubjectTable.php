@@ -9,6 +9,7 @@ class CreateSubjectTable extends \yii\db\Migration
     public function safeUp()
     {
         $identity_id_schema = Subject::getIdentityIdSchema();
+
         $identity_id_builder = $this->db->schema->createColumnSchemaBuilder(
             $identity_id_schema->dbType,
             $identity_id_schema->size
@@ -18,6 +19,18 @@ class CreateSubjectTable extends \yii\db\Migration
             'identity_id' => $identity_id_builder->notNull(),
             'distinguished_name' => $this->string()->notNull()->unique(),
         ]);
+
+        if($this->db->driverName != 'sqlite') {
+            $this->addForeignKey(
+                Subject::tableName() . '_identity',
+                Subject::tableName(),
+                'identity_id',
+                Subject::getIdentityTableSchema()->name,
+                $identity_id_schema->name,
+                'cascade',
+                'restrict'
+            );
+        }
     }
 
     public function safeDown()

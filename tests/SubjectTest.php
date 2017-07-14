@@ -24,9 +24,9 @@ class SubjectTest extends TestCase
 
     public function testCreateModel()
     {
-        (new Subject($this->alice->id, 'CN=Alice,C=AT'))->save();
-        (new Subject($this->alice->id, 'CN=Alice,O=Office,C=AT'))->save();
-        (new Subject($this->bob->id, 'CN=Bob,C=AT'))->save();
+        (new Subject($this->alice, 'CN=Alice,C=AT'))->save();
+        (new Subject($this->alice, 'CN=Alice,O=Office,C=AT'))->save();
+        (new Subject($this->bob, 'CN=Bob,C=AT'))->save();
         $subjects = ArrayHelper::map(
             Subject::find()->all(),
             function($s) { return $s->getAttributes(); }
@@ -44,9 +44,9 @@ class SubjectTest extends TestCase
 
     public function testDNUnique()
     {
-        $this->assertTrue((new Subject($this->alice->id, 'CN=Alice,C=AT'))->save());
-        $this->assertTrue((new Subject($this->bob->id, 'CN=Bob,C=AT'))->save());
-        $dup = new Subject($this->alice->id, 'CN=Alice,C=AT');
+        $this->assertTrue((new Subject($this->alice, 'CN=Alice,C=AT'))->save());
+        $this->assertTrue((new Subject($this->bob, 'CN=Bob,C=AT'))->save());
+        $dup = new Subject($this->alice, 'CN=Alice,C=AT');
         $this->assertFalse($dup->save());
         $this->assertEquals(1, sizeof($dup->getErrors()));
         $this->assertEquals(1, sizeof($dup->getErrors('distinguished_name')));
