@@ -66,8 +66,17 @@ class Subject extends \yii\db\ActiveRecord
         if($identity === null) {
             $this->identity_id = null;
         } else {
-            // @see \yii\web\IdentityInterface::getId()
-            $this->identity_id = $identity->getId();
+            $cls = self::getIdentityClass();
+            if($identity instanceof $cls) {
+                // @see \yii\web\IdentityInterface::getId()
+                $this->identity_id = $identity->getId();
+            } else {
+                throw new \TypeError(sprintf(
+                    "expected instance of %s,\n%s given",
+                    $cls,
+                    get_class($identity)
+                ));
+            }
         }
 
         // TODO: update related record

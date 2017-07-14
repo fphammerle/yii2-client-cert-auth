@@ -6,6 +6,15 @@ use \fphammerle\helpers\ArrayHelper;
 use \fphammerle\yii2\auth\clientcert\Subject;
 use \fphammerle\yii2\auth\clientcert\migrations;
 
+class DummyUser implements \yii\web\IdentityInterface
+{
+    public static function findIdentity($id) {}
+    public static function findIdentityByAccessToken($token, $type = null) {}
+    public function getId() {}
+    public function getAuthKey() {}
+    public function validateAuthKey($authKey) {}
+}
+
 class SubjectTest extends TestCase
 {
     protected $alice;
@@ -87,5 +96,18 @@ class SubjectTest extends TestCase
 
         $s->identity = null;
         $this->assertNull($s->identity_id);
+    }
+
+    public function testSetIdentityInvalidType()
+    {
+        $s = new Subject;
+        $this->setExpectedException(\TypeError::class);
+        $s->identity = new DummyUser;
+    }
+
+    public function testConstructInvalidType()
+    {
+        $this->setExpectedException(\TypeError::class);
+        new Subject(new DummyUser);
     }
 }
