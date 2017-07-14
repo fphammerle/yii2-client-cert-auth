@@ -43,4 +43,28 @@ class SubjectTest extends TestCase
         $this->assertEquals(1, sizeof($dup->getErrors()));
         $this->assertEquals(1, sizeof($dup->getErrors('distinguished_name')));
     }
+
+    public function testGetIdentityClass()
+    {
+        $this->assertEquals(
+            'fphammerle\yii2\auth\clientcert\tests\models\User',
+            Subject::getIdentityClass()
+        );
+    }
+
+    public function testGetIdentityTableSchema()
+    {
+        $this->assertEquals(
+            'user',
+            Subject::getIdentityTableSchema()->name
+        );
+    }
+
+    public function testGetIdentityIdSchema()
+    {
+        $schema = Subject::getIdentityIdSchema();
+        $this->assertEquals('id', $schema->name);
+        $this->assertEquals('integer', $schema->type);
+        $this->assertTrue($schema->isPrimaryKey);
+    }
 }

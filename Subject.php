@@ -33,6 +33,28 @@ class Subject extends \yii\db\ActiveRecord
         return \Yii::$app->user->identityClass;
     }
 
+    /**
+     * @return \yii\db\TableSchema
+     */
+    public static function getIdentityTableSchema()
+    {
+        $cls = Subject::getIdentityClass();
+        return (new $cls)->getTableSchema();
+    }
+
+    /**
+     * @return \yii\db\ColumnSchema
+     */
+    public static function getIdentityIdSchema()
+    {
+        $keys = array_filter(
+            self::getIdentityTableSchema()->columns,
+            function($c) { return $c->isPrimaryKey; }
+        );
+        assert(sizeof($keys) == 1);
+        return array_pop($keys);
+    }
+
     // public function getIdentity()
     // {
     //     return $this->hasOne(self::getIdentityClass(), ['id' => 'identity_id']);
