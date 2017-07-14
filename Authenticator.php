@@ -1,8 +1,8 @@
 <?php
 
-namespace fphammerle\yii2;
+namespace fphammerle\yii2\auth\clientcert;
 
-class ClientCertAuth extends \yii\base\Component
+class Authenticator extends \yii\base\Component
 {
     /**
      * @return string

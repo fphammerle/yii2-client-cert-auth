@@ -1,12 +1,14 @@
 <?php
 
-use fphammerle\yii2\ClientCertAuth;
+namespace fphammerle\yii2\auth\clientcert\tests;
+
+use \fphammerle\yii2\auth\clientcert\Authenticator;
 
 class ClientCertAuthTest extends \PHPUnit_Framework_TestCase
 {
     public function mockApplication()
     {
-        return new \yii\web\Application([
+        $app = new \yii\web\Application([
             'id' => 'yii2-client-cert-auth-test',
             'basePath' => __DIR__,
             // 'vendorPath' => dirname(__DIR__) . '/vendor',
@@ -15,16 +17,20 @@ class ClientCertAuthTest extends \PHPUnit_Framework_TestCase
                     'class' => '\yii\db\Connection',
                     'dsn' => 'sqlite::memory:',
                 ],
+                'user' => [
+                    'identityClass' => models\User::className(),
+                ],
             ],
         ]);
+        (new migrations\CreateUserTable)->up();
+        return $app;
     }
 
     public function testDb()
     {
         $app = $this->mockApplication();
-        $app->db->createCommand('CREATE TABLE test ( x INT )')->execute();
-        $app->db->createCommand('INSERT INTO test (x) VALUES (1), (2), (4)')->execute();
-        var_dump($app->db->createCommand('SELECT * FROM test')->queryAll());
-        $this->assertEquals('bar', ClientCertAuth::foo());
+        var_dump($app->db->createCommand('SELECT * FROM user')->queryAll());
+        $this->assertEquals('bar', Authenticator::foo());
+        $this->assertNull($app->user->getIdentity());
     }
 }
