@@ -60,4 +60,40 @@ class AuthenticatorTest extends TestCase
         $this->assertNull($u);
         $this->assertEquals($this->bob->id, self::getIdentity()->id);
     }
+
+    /**
+     * @dataProvider loginByClientCertProvider
+     */
+    public function testLoginByClientCert($request_params, $username)
+    {
+        $_SERVER = $request_params;
+
+        $a = new Authenticator;
+        $this->assertNull(self::getIdentity());
+
+        $u = $a->loginByClientCertficiate();
+
+        if($username) {
+            $this->assertEquals($username, self::getIdentity()->username);
+            $this->assertEquals($username, $u->username);
+        } else {
+            $this->assertNull($u);
+            $this->assertNull(self::getIdentity());
+        }
+    }
+
+    public function loginByClientCertProvider()
+    {
+        return [
+            [[], null],
+            [['SSL_CLIENT_S_DN' => 'CN=Alice,C=AT'], null],
+            [['SSL_CLIENT_VERIFY' => 'FAILED', 'SSL_CLIENT_S_DN' => 'CN=Alice,C=AT'], null],
+            [['SSL_CLIENT_VERIFY' => 'NONE', 'SSL_CLIENT_S_DN' => 'CN=Alice,C=AT'], null],
+            [['SSL_CLIENT_VERIFY' => 'SUCCESS', 'SSL_CLIENT_S_DN' => null], null],
+            [['SSL_CLIENT_VERIFY' => 'SUCCESS', 'SSL_CLIENT_S_DN' => ''], null],
+            [['SSL_CLIENT_VERIFY' => 'SUCCESS', 'SSL_CLIENT_S_DN' => 'CN=Alice,C=AT'], 'alice'],
+            [['SSL_CLIENT_VERIFY' => 'SUCCESS', 'SSL_CLIENT_S_DN' => 'CN=Alice,O=Office,C=AT'], 'alice'],
+            [['SSL_CLIENT_VERIFY' => 'SUCCESS', 'SSL_CLIENT_S_DN' => 'CN=Bob,C=AT'], 'bob'],
+        ];
+    }
 }
