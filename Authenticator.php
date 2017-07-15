@@ -5,10 +5,21 @@ namespace fphammerle\yii2\auth\clientcert;
 class Authenticator extends \yii\base\Component
 {
     /**
-     * @return string
+     * @see \yii\web\User::switchIdentity
+     * @return IdentityInterface|null
      */
-    public static function foo()
+    public function loginByDistinguishedName($dn, $duration = 0)
     {
-        return 'bar';
+        $subj = Subject::findByDistinguishedName($dn);
+        if($subj) {
+            \Yii::$app->user->switchIdentity($subj->identity, $duration);
+            if(\Yii::$app->user->identity == $subj->identity) {
+                return $subj->identity;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 }
