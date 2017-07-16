@@ -72,6 +72,14 @@ class AuthenticatorTest extends TestCase
         ];
     }
 
+    public function testGetClientCertSubjectDistinguishedName()
+    {
+        $a = new Authenticator;
+        $_SERVER['SSL_CLIENT_S_DN'] = 'CN=Alice,C=AT';
+        $this->assertEquals('CN=Alice,C=AT', $a->getClientCertSubjectDistinguishedName());
+        $this->assertEquals('CN=Alice,C=AT', $a->clientCertSubjectDistinguishedName);
+    }
+
     /**
      * @dataProvider loginByClientCertProvider
      */

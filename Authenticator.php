@@ -42,13 +42,27 @@ class Authenticator extends \yii\base\Component
     }
 
     /**
+     * @return string|null
+     */
+    public function getClientCertSubjectDistinguishedName()
+    {
+        if(isset($_SERVER['SSL_CLIENT_S_DN'])) {
+            return $_SERVER['SSL_CLIENT_S_DN'];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * @return IdentityInterface|null
      */
     public function loginByClientCertficiate()
     {
         if($this->getClientCertVerified()) {
             // Subject DN in client certificate
-            return $this->loginByDistinguishedName($_SERVER["SSL_CLIENT_S_DN"]);
+            return $this->loginByDistinguishedName(
+                $this->getClientCertSubjectDistinguishedName()
+            );
         } else {
             return null;
         }
