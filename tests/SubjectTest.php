@@ -103,13 +103,13 @@ class SubjectTest extends TestCase
     public function testSetIdentityInvalidType()
     {
         $s = new Subject;
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->setExpectedException('\InvalidArgumentException');
         $s->identity = new DummyUser;
     }
 
     public function testConstructInvalidType()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->setExpectedException('\InvalidArgumentException');
         new Subject(new DummyUser);
     }
 
