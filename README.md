@@ -3,6 +3,14 @@
 
 ## Setup
 
+### 1. Install
+
+```
+composer require fphammerle/yii2-client-cert-auth
+```
+
+### 2. Yii Application Config
+
 ```
 $config = [
     // ...
