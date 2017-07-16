@@ -2,9 +2,7 @@
 
 namespace fphammerle\yii2\auth\clientcert\tests;
 
-use \fphammerle\yii2\auth\clientcert\Subject;
-use \fphammerle\yii2\auth\clientcert\migrations\m170716_175707_create_identity_cert_subject_table;
-use \fphammerle\yii2\auth\clientcert\tests\migrations\CreateUserTable;
+use \fphammerle\yii2\auth\clientcert;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
@@ -32,7 +30,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             || !is_object($app_config['components']['db'])) {
             $this->assertEquals([], $app->db->getSchema()->getTableNames());
             ob_start();
-            (new CreateUserTable)->up();
+            (new clientcert\tests\migrations\CreateUserTable)->up();
             ob_end_clean();
         }
 
@@ -49,7 +47,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
     public function createSubject($user, $dn)
     {
-        $subj = new Subject;
+        $subj = new clientcert\Subject;
         $subj->identity = $user;
         $subj->distinguished_name = $dn;
         $this->assertTrue($subj->save());
@@ -59,7 +57,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     public function createSubjectTable()
     {
         ob_start();
-        (new m170716_175707_create_identity_cert_subject_table)->up();
+        (new clientcert\migrations\m170716_175707_create_identity_cert_subject_table)->up();
         ob_end_clean();
     }
 
