@@ -4,6 +4,8 @@ namespace fphammerle\yii2\auth\clientcert;
 
 class Authenticator extends \yii\base\Component
 {
+    use \fphammerle\helpers\PropertyAccessTrait;
+
     public function init()
     {
         parent::init();
@@ -31,12 +33,20 @@ class Authenticator extends \yii\base\Component
     }
 
     /**
+     * @return bool
+     */
+    public function getClientCertVerified()
+    {
+        return isset($_SERVER['SSL_CLIENT_VERIFY'])
+            && $_SERVER['SSL_CLIENT_VERIFY'] == 'SUCCESS';
+    }
+
+    /**
      * @return IdentityInterface|null
      */
     public function loginByClientCertficiate()
     {
-        if(isset($_SERVER['SSL_CLIENT_VERIFY'])
-            && $_SERVER['SSL_CLIENT_VERIFY'] == 'SUCCESS') {
+        if($this->getClientCertVerified()) {
             // Subject DN in client certificate
             return $this->loginByDistinguishedName($_SERVER["SSL_CLIENT_S_DN"]);
         } else {

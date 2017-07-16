@@ -51,6 +51,28 @@ class AuthenticatorTest extends TestCase
     }
 
     /**
+     * @dataProvider getClientCertVerifiedProvider
+     */
+    public function testGetClientCertVerified($request_params, $client_cert_certified)
+    {
+        $a = new Authenticator;
+        $_SERVER = $request_params;
+        $this->assertEquals($client_cert_certified, $a->getClientCertVerified());
+        $this->assertEquals($client_cert_certified, $a->clientCertVerified);
+    }
+
+    public function getClientCertVerifiedProvider()
+    {
+        return [
+            [[], false],
+            [['SSL_CLIENT_S_DN' => 'CN=Alice,C=AT'], false],
+            [['SSL_CLIENT_VERIFY' => 'FAILED', 'SSL_CLIENT_S_DN' => 'CN=Alice,C=AT'], false],
+            [['SSL_CLIENT_VERIFY' => 'NONE', 'SSL_CLIENT_S_DN' => 'CN=Alice,C=AT'], false],
+            [['SSL_CLIENT_VERIFY' => 'SUCCESS', 'SSL_CLIENT_S_DN' => null], true],
+        ];
+    }
+
+    /**
      * @dataProvider loginByClientCertProvider
      */
     public function testLoginByClientCert($request_params, $username)
