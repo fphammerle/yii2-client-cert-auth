@@ -4,7 +4,6 @@ namespace fphammerle\yii2\auth\clientcert\tests;
 
 use \fphammerle\helpers\ArrayHelper;
 use \fphammerle\yii2\auth\clientcert\Subject;
-use \fphammerle\yii2\auth\clientcert\migrations;
 
 class DummyUser implements \yii\web\IdentityInterface
 {
@@ -23,9 +22,7 @@ class SubjectTest extends TestCase
     protected function setUp()
     {
         $this->mockApplication();
-        ob_start();
-        (new migrations\CreateSubjectTable)->up();
-        ob_end_clean();
+        $this->createSubjectTable();
 
         $this->alice = new models\User('alice');
         $this->bob = new models\User('bob');

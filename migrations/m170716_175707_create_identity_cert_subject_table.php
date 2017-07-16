@@ -4,7 +4,7 @@ namespace fphammerle\yii2\auth\clientcert\migrations;
 
 use fphammerle\yii2\auth\clientcert\Subject;
 
-class CreateSubjectTable extends \yii\db\Migration
+class m170716_175707_create_identity_cert_subject_table extends \yii\db\Migration
 {
     public function safeUp()
     {

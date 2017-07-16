@@ -3,7 +3,7 @@
 namespace fphammerle\yii2\auth\clientcert\tests;
 
 use \fphammerle\yii2\auth\clientcert\Subject;
-use \fphammerle\yii2\auth\clientcert\migrations\CreateSubjectTable;
+use \fphammerle\yii2\auth\clientcert\migrations\m170716_175707_create_identity_cert_subject_table;
 use \fphammerle\yii2\auth\clientcert\tests\migrations\CreateUserTable;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
@@ -59,7 +59,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     public function createSubjectTable()
     {
         ob_start();
-        (new CreateSubjectTable)->up();
+        (new m170716_175707_create_identity_cert_subject_table)->up();
         ob_end_clean();
     }
 
