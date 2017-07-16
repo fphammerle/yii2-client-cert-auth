@@ -3,8 +3,6 @@
 namespace fphammerle\yii2\auth\clientcert\tests;
 
 use \fphammerle\yii2\auth\clientcert\Authenticator;
-use \fphammerle\yii2\auth\clientcert\Subject;
-use \fphammerle\yii2\auth\clientcert\migrations;
 
 class AuthenticatorTest extends TestCase
 {
@@ -14,51 +12,42 @@ class AuthenticatorTest extends TestCase
     protected function setUp()
     {
         $this->mockApplication();
-        ob_start();
-        (new migrations\CreateSubjectTable)->up();
-        ob_end_clean();
+        $this->createSubjectTable();
 
-        $this->alice = new models\User('alice');
-        $this->bob = new models\User('bob');
-        $this->assertTrue($this->alice->save());
-        $this->assertTrue($this->bob->save());
+        $this->alice = $this->createUser('alice');
+        $this->bob = $this->createUser('bob');
 
-        (new Subject($this->alice, 'CN=Alice,C=AT'))->save();
-        (new Subject($this->alice, 'CN=Alice,O=Office,C=AT'))->save();
-        (new Subject($this->bob, 'CN=Bob,C=AT'))->save();
+        $this->createSubject($this->alice, 'CN=Alice,C=AT');
+        $this->createSubject($this->alice, 'CN=Alice,O=Office,C=AT');
+        $this->createSubject($this->bob, 'CN=Bob,C=AT');
 
-        $this->assertNull(self::getIdentity());
-    }
-
-    public static function getIdentity()
-    {
-        return \Yii::$app->user->getIdentity();
+        $this->assertNull($this->getIdentity());
     }
 
     public function testLoginByDN()
     {
         $a = new Authenticator;
-        $this->assertNull(self::getIdentity());
+        $this->assertNull($this->getIdentity());
 
         $u = $a->loginByDistinguishedName('CN=Alice,C=AT');
         $this->assertEquals($this->alice->id, $u->id);
-        $this->assertEquals($this->alice->id, self::getIdentity()->id);
+        $this->assertEquals($this->alice->id, $this->getIdentity()->id);
 
         $u = $a->loginByDistinguishedName('CN=Alice,O=Secret,C=AT');
         $this->assertNull($u);
-        $this->assertEquals($this->alice->id, self::getIdentity()->id);
+        $this->assertEquals($this->alice->id, $this->getIdentity()->id);
 
         $u = $a->loginByDistinguishedName('CN=Bob,C=AT');
         $this->assertEquals($this->bob->id, $u->id);
-        $this->assertEquals($this->bob->id, self::getIdentity()->id);
+        $this->assertEquals($this->bob->id, $this->getIdentity()->id);
 
         $u = $a->loginByDistinguishedName('');
         $this->assertNull($u);
-        $this->assertEquals($this->bob->id, self::getIdentity()->id);
+        $this->assertEquals($this->bob->id, $this->getIdentity()->id);
 
         $u = $a->loginByDistinguishedName(NULL);
         $this->assertNull($u);
-        $this->assertEquals($this->bob->id, self::getIdentity()->id);
+        $this->assertEquals($this->bob->id, $this->getIdentity()->id);
     }
 
     /**
@@ -69,16 +58,16 @@ class AuthenticatorTest extends TestCase
         $_SERVER = $request_params;
 
         $a = new Authenticator;
-        $this->assertNull(self::getIdentity());
+        $this->assertNull($this->getIdentity());
 
         $u = $a->loginByClientCertficiate();
 
         if($username) {
-            $this->assertEquals($username, self::getIdentity()->username);
+            $this->assertEquals($username, $this->getIdentity()->username);
             $this->assertEquals($username, $u->username);
         } else {
             $this->assertNull($u);
-            $this->assertNull(self::getIdentity());
+            $this->assertNull($this->getIdentity());
         }
     }
 
