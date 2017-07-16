@@ -51,3 +51,12 @@ $config = [
     // ...
 ];
 ```
+
+### 5. Register Client Certificates
+
+```
+$subj = new \fphammerle\yii2\auth\clientCert\Subject;
+$subj->identity = \Yii::$app->user->identity;
+$subj->distinguished_name = "CN=Fabian,C=AT";
+$subj->save();
+```
