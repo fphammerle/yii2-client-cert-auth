@@ -4,8 +4,6 @@ namespace fphammerle\yii2\auth\clientcert;
 
 class Authenticator extends \yii\base\Component
 {
-    use \fphammerle\helpers\PropertyAccessTrait;
-
     public function init()
     {
         parent::init();
