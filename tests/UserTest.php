@@ -23,6 +23,7 @@ class UserTest extends TestCase
     public function testLoginLogout()
     {
         $app = $this->mockApplication();
+        $this->assertNull($app->user->identity);
         $alice = new models\User('alice');
         $alice->save();
         $this->assertTrue($app->user->login($alice));

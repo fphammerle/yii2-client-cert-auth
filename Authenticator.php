@@ -4,6 +4,13 @@ namespace fphammerle\yii2\auth\clientcert;
 
 class Authenticator extends \yii\base\Component
 {
+    public function init()
+    {
+        parent::init();
+
+        $this->loginByClientCertficiate();
+    }
+
     /**
      * @see \yii\web\User::switchIdentity
      * @return IdentityInterface|null

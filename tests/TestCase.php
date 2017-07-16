@@ -8,9 +8,9 @@ use \fphammerle\yii2\auth\clientcert\tests\migrations\CreateUserTable;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
-    public function mockApplication()
+    public function mockApplication($app_config = [])
     {
-        $app = new \yii\web\Application([
+        $app_config_default = [
             'id' => 'yii2-client-cert-auth-test',
             'basePath' => __DIR__,
             // 'vendorPath' => dirname(__DIR__) . '/vendor',
@@ -23,12 +23,19 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                     'identityClass' => models\User::className(),
                 ],
             ],
-        ]);
-        $this->assertEquals([], $app->db->getSchema()->getTableNames());
-        ob_start();
-        (new CreateUserTable)->up();
-        ob_end_clean();
-        $this->assertNull($app->user->getIdentity());
+        ];
+        $app = new \yii\web\Application(
+            array_replace_recursive($app_config_default, $app_config)
+        );
+
+        if(!isset($app_config['components']['db'])
+            || !is_object($app_config['components']['db'])) {
+            $this->assertEquals([], $app->db->getSchema()->getTableNames());
+            ob_start();
+            (new CreateUserTable)->up();
+            ob_end_clean();
+        }
+
         return $app;
     }
 

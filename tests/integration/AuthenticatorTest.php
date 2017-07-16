@@ -1,8 +1,9 @@
 <?php
 
-namespace fphammerle\yii2\auth\clientcert\tests;
+namespace fphammerle\yii2\auth\clientcert\tests\integration;
 
 use \fphammerle\yii2\auth\clientcert\Authenticator;
+use \fphammerle\yii2\auth\clientcert\tests\TestCase;
 
 class AuthenticatorTest extends TestCase
 {
@@ -12,6 +13,7 @@ class AuthenticatorTest extends TestCase
     protected function setUp()
     {
         $this->mockApplication();
+
         $this->createSubjectTable();
 
         $this->alice = $this->createUser('alice');
@@ -20,34 +22,6 @@ class AuthenticatorTest extends TestCase
         $this->createSubject($this->alice, 'CN=Alice,C=AT');
         $this->createSubject($this->alice, 'CN=Alice,O=Office,C=AT');
         $this->createSubject($this->bob, 'CN=Bob,C=AT');
-
-        $this->assertNull($this->getIdentity());
-    }
-
-    public function testLoginByDN()
-    {
-        $a = new Authenticator;
-        $this->assertNull($this->getIdentity());
-
-        $u = $a->loginByDistinguishedName('CN=Alice,C=AT');
-        $this->assertEquals($this->alice->id, $u->id);
-        $this->assertEquals($this->alice->id, $this->getIdentity()->id);
-
-        $u = $a->loginByDistinguishedName('CN=Alice,O=Secret,C=AT');
-        $this->assertNull($u);
-        $this->assertEquals($this->alice->id, $this->getIdentity()->id);
-
-        $u = $a->loginByDistinguishedName('CN=Bob,C=AT');
-        $this->assertEquals($this->bob->id, $u->id);
-        $this->assertEquals($this->bob->id, $this->getIdentity()->id);
-
-        $u = $a->loginByDistinguishedName('');
-        $this->assertNull($u);
-        $this->assertEquals($this->bob->id, $this->getIdentity()->id);
-
-        $u = $a->loginByDistinguishedName(NULL);
-        $this->assertNull($u);
-        $this->assertEquals($this->bob->id, $this->getIdentity()->id);
     }
 
     /**
@@ -55,17 +29,19 @@ class AuthenticatorTest extends TestCase
      */
     public function testLoginByClientCert($request_params, $username)
     {
-        $a = new Authenticator;
-        $this->assertNull($this->getIdentity());
+        $_SERVER = array_replace_recursive($_SERVER, $request_params);
 
-        $_SERVER = $request_params;
-        $u = $a->loginByClientCertficiate();
+        $app = $this->mockApplication([
+            'bootstrap' => ['clientCertAuth'],
+            'components' => [
+                'db' => \Yii::$app->db,
+                'clientCertAuth' => Authenticator::className(),
+            ],
+        ]);
 
         if($username) {
             $this->assertEquals($username, $this->getIdentity()->username);
-            $this->assertEquals($username, $u->username);
         } else {
-            $this->assertNull($u);
             $this->assertNull($this->getIdentity());
         }
     }
@@ -73,8 +49,8 @@ class AuthenticatorTest extends TestCase
     public function loginByClientCertProvider()
     {
         return [
-            [[], null],
-            [['SSL_CLIENT_S_DN' => 'CN=Alice,C=AT'], null],
+            [['SSL_CLIENT_VERIFY' => null, 'SSL_CLIENT_S_DN' => null], null],
+            [['SSL_CLIENT_VERIFY' => null, 'SSL_CLIENT_S_DN' => 'CN=Alice,C=AT'], null],
             [['SSL_CLIENT_VERIFY' => 'FAILED', 'SSL_CLIENT_S_DN' => 'CN=Alice,C=AT'], null],
             [['SSL_CLIENT_VERIFY' => 'NONE', 'SSL_CLIENT_S_DN' => 'CN=Alice,C=AT'], null],
             [['SSL_CLIENT_VERIFY' => 'SUCCESS', 'SSL_CLIENT_S_DN' => null], null],
