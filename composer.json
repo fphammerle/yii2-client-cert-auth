@@ -1,6 +1,6 @@
 {
     "name": "fphammerle/yii2-client-cert-auth",
-    "description": "",
+    "description": "yii2 extension for automatic login via TLS/SSL/HTTPS client certificates",
     "authors" : [
         {
             "name": "Fabian Peter Hammerle",
