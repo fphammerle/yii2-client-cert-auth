@@ -71,7 +71,7 @@ class Subject extends \yii\db\ActiveRecord
                 // @see \yii\web\IdentityInterface::getId()
                 $this->identity_id = $identity->getId();
             } else {
-                throw new \TypeError(sprintf(
+                throw new \InvalidArgumentException(sprintf(
                     "expected instance of %s,\n%s given",
                     $cls,
                     get_class($identity)
