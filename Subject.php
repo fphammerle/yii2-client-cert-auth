@@ -83,7 +83,7 @@ class Subject extends \yii\db\ActiveRecord
         // $this->getRelatedRecords()['identity'] = $identity;
     }
 
-    public function findByDistinguishedName($dn)
+    public static function findByDistinguishedName($dn)
     {
         return self::findOne(['distinguished_name' => $dn]);
     }
