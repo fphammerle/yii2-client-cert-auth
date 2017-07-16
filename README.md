@@ -32,7 +32,13 @@ yii2 extension for automatic login via TLS/SSL/HTTPS client certificates
 composer require fphammerle/yii2-client-cert-auth
 ```
 
-### 3. Enable Extension in Yii's Application Config
+### 3. Create Table
+
+```
+./yii migrate --migrationPath=./vendor/fphammerle/yii2-client-cert-auth/migrations
+```
+
+### 4. Enable Extension in Yii's Application Config
 
 ```
 $config = [
