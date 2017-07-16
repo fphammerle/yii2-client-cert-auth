@@ -3,13 +3,32 @@
 
 ## Setup
 
-### 1. Install
+### 1. Configure Webserver
+
+#### apache
+
+```
+<VirtualHost example.hammerle.me:443>
+    # ...
+
+    SSLEngine on
+    SSLCertificateFile /etc/somewhere/example-server-cert.pem
+    SSLCertificateKeyFile /etc/restricted/example-server-key.pem
+
+    SSLVerifyClient optional
+    SSLVerifyDepth 1
+    SSLCACertificateFile /etc/somewhere/example-client-cert-ca.pem
+    SSLOptions +StdEnvVars
+</VirtualHost>
+```
+
+### 2. Install Extension
 
 ```
 composer require fphammerle/yii2-client-cert-auth
 ```
 
-### 2. Yii Application Config
+### 3. Enable Extension in Yii's Application Config
 
 ```
 $config = [
